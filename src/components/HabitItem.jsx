@@ -1,55 +1,69 @@
-import { useEffect, useRef, useState } from 'react'
-import { Check, Play, Pause, RotateCcw, Minus, Plus } from 'lucide-react'
-import { getIcon, colorClasses } from '../game/iconRegistry.js'
+import { useEffect, useRef, useState } from "react";
+import { Check, Play, Pause, RotateCcw, Minus, Plus } from "lucide-react";
+import { getIcon, colorClasses } from "../game/iconRegistry.js";
 
 const DIFFICULTY_STYLES = {
-  Easy: 'text-teal bg-teal/10',
-  Medium: 'text-blue-300 bg-blue-400/10',
-  Hard: 'text-orange-300 bg-orange-400/10',
-  Epic: 'text-purple bg-purple/10',
-}
+  Easy: "text-teal bg-teal/10",
+  Medium: "text-blue-300 bg-blue-400/10",
+  Hard: "text-orange-300 bg-orange-400/10",
+  Epic: "text-purple bg-purple/10",
+};
 
 function formatSeconds(total) {
-  const m = Math.floor(total / 60)
-  const s = total % 60
-  return `${m}:${String(s).padStart(2, '0')}`
+  const m = Math.floor(total / 60);
+  const s = total % 60;
+  return `${m}:${String(s).padStart(2, "0")}`;
 }
 
 function HabitFrame({ habit, children }) {
-  const { icon, color, title, frequency, xp, coins, done, difficulty, currentStreak, kind } = habit
-  const Icon = getIcon(icon)
-  const { text: iconColor, bg: iconBg } = colorClasses(color)
+  const {
+    icon,
+    color,
+    title,
+    frequency,
+    xp,
+    coins,
+    done,
+    difficulty,
+    currentStreak,
+    kind,
+  } = habit;
+  const Icon = getIcon(icon);
+  const { text: iconColor, bg: iconBg } = colorClasses(color);
 
   return (
     <div
       className={`flex items-center gap-3 bg-surface border rounded-xl px-4 py-3 transition-colors ${
-        done ? 'border-teal/30' : 'border-border hover:border-teal/30'
+        done ? "border-teal/30" : "border-border hover:border-teal/30"
       }`}
     >
-      <span className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-transform duration-200 ${iconBg}`}>
+      <span
+        className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-transform duration-200 ${iconBg}`}
+      >
         <Icon size={17} className={iconColor} />
       </span>
 
       <span className="flex-1 min-w-0">
         <span className="flex items-center gap-2 flex-wrap">
-          <p className={`text-sm font-medium truncate ${done ? 'line-through text-gray-500' : 'text-white'}`}>
+          <p
+            className={`text-sm font-medium truncate ${done ? "line-through text-gray-500" : "text-white"}`}
+          >
             {title}
           </p>
           {difficulty && (
-            <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${DIFFICULTY_STYLES[difficulty]}`}>
+            <span
+              className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${DIFFICULTY_STYLES[difficulty]}`}
+            >
               {difficulty}
             </span>
           )}
-          {kind === 'task' && (
+          {kind === "task" && (
             <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded text-gold bg-gold/10">
               Task
             </span>
           )}
         </span>
-        <p className="text-xs text-gray-500">
-          {frequency}
-          {currentStreak > 0 && <span className="text-orange-400"> · 🔥 {currentStreak}</span>}
-        </p>
+        <p className="text-xs text-gray-500">{frequency}</p>
       </span>
 
       {children}
@@ -59,71 +73,76 @@ function HabitFrame({ habit, children }) {
         <span className="text-xs text-gold">+{coins} coins</span>
       </span>
     </div>
-  )
+  );
 }
 
 function TickControl({ habit, onToggle }) {
   return (
     <button
       onClick={onToggle}
-      aria-label={habit.done ? 'Mark incomplete' : 'Mark complete'}
+      aria-label={habit.done ? "Mark incomplete" : "Mark complete"}
       className={`w-8 h-8 rounded-lg border flex items-center justify-center shrink-0 transition-all duration-200 hover:scale-110 active:scale-95 ${
-        habit.done ? 'bg-teal border-teal' : 'border-gray-500 hover:border-teal'
+        habit.done ? "bg-teal border-teal" : "border-gray-500 hover:border-teal"
       }`}
     >
       {habit.done && <Check size={16} className="text-bg" strokeWidth={3} />}
     </button>
-  )
+  );
 }
 
 function TimerControl({ habit, onUpdateTimer }) {
-  const [localElapsed, setLocalElapsed] = useState(habit.timerElapsedSeconds)
-  const [running, setRunning] = useState(false)
-  const intervalRef = useRef(null)
+  const [localElapsed, setLocalElapsed] = useState(habit.timerElapsedSeconds);
+  const [running, setRunning] = useState(false);
+  const intervalRef = useRef(null);
 
   useEffect(() => {
-    if (!running) return
+    if (!running) return;
     intervalRef.current = setInterval(() => {
       setLocalElapsed((prev) => {
-        const next = Math.min(prev + 1, habit.timerTargetSeconds)
+        const next = Math.min(prev + 1, habit.timerTargetSeconds);
         if (next >= habit.timerTargetSeconds) {
-          clearInterval(intervalRef.current)
-          setRunning(false)
-          onUpdateTimer(next)
+          clearInterval(intervalRef.current);
+          setRunning(false);
+          onUpdateTimer(next);
         }
-        return next
-      })
-    }, 1000)
-    return () => clearInterval(intervalRef.current)
+        return next;
+      });
+    }, 1000);
+    return () => clearInterval(intervalRef.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [running])
+  }, [running]);
 
-  useEffect(() => () => clearInterval(intervalRef.current), [])
+  useEffect(() => () => clearInterval(intervalRef.current), []);
 
   function toggleRunning() {
     if (running) {
-      clearInterval(intervalRef.current)
-      setRunning(false)
-      onUpdateTimer(localElapsed) // commit progress on pause
+      clearInterval(intervalRef.current);
+      setRunning(false);
+      onUpdateTimer(localElapsed); // commit progress on pause
     } else {
-      setRunning(true)
+      setRunning(true);
     }
   }
 
   function reset() {
-    clearInterval(intervalRef.current)
-    setRunning(false)
-    setLocalElapsed(0)
-    onUpdateTimer(0)
+    clearInterval(intervalRef.current);
+    setRunning(false);
+    setLocalElapsed(0);
+    onUpdateTimer(0);
   }
 
-  const pct = Math.min(100, Math.round((localElapsed / habit.timerTargetSeconds) * 100))
+  const pct = Math.min(
+    100,
+    Math.round((localElapsed / habit.timerTargetSeconds) * 100)
+  );
 
   return (
     <div className="flex items-center gap-2.5 shrink-0">
       <div className="w-24">
         <div className="flex justify-between text-[11px] text-gray-500 mb-1">
-          <span className={running ? 'text-teal font-medium' : ''}>{formatSeconds(localElapsed)}</span>
+          <span className={running ? "text-teal font-medium" : ""}>
+            {formatSeconds(localElapsed)}
+          </span>
           <span>{formatSeconds(habit.timerTargetSeconds)}</span>
         </div>
         <div className="h-1.5 bg-surface-light rounded-full overflow-hidden">
@@ -135,7 +154,7 @@ function TimerControl({ habit, onUpdateTimer }) {
       </div>
       <button
         onClick={toggleRunning}
-        aria-label={running ? 'Pause timer' : 'Start timer'}
+        aria-label={running ? "Pause timer" : "Start timer"}
         disabled={habit.done}
         className="w-8 h-8 rounded-lg bg-teal/10 text-teal flex items-center justify-center hover:bg-teal/20 hover:scale-110 active:scale-95 transition-all duration-200 disabled:opacity-40 disabled:hover:scale-100"
       >
@@ -149,23 +168,26 @@ function TimerControl({ habit, onUpdateTimer }) {
         <RotateCcw size={13} />
       </button>
     </div>
-  )
+  );
 }
 
 function NumericControl({ habit, onUpdateNumeric }) {
-  const step = Math.max(1, Math.round(habit.numericTarget / 10))
+  const step = Math.max(1, Math.round(habit.numericTarget / 10));
 
   function adjust(delta) {
-    onUpdateNumeric(Math.max(0, habit.numericValue + delta))
+    onUpdateNumeric(Math.max(0, habit.numericValue + delta));
   }
 
-  const pct = Math.min(100, Math.round((habit.numericValue / habit.numericTarget) * 100))
+  const pct = Math.min(
+    100,
+    Math.round((habit.numericValue / habit.numericTarget) * 100)
+  );
 
   return (
     <div className="flex items-center gap-2.5 shrink-0">
       <div className="w-28">
         <div className="flex justify-between text-[11px] text-gray-500 mb-1">
-          <span className={habit.done ? 'text-teal font-medium' : ''}>
+          <span className={habit.done ? "text-teal font-medium" : ""}>
             {habit.numericValue} / {habit.numericTarget}
           </span>
           <span className="truncate max-w-[60px]">{habit.numericUnit}</span>
@@ -192,21 +214,32 @@ function NumericControl({ habit, onUpdateNumeric }) {
         <Plus size={13} />
       </button>
     </div>
-  )
+  );
 }
 
-export default function HabitItem({ habit, onToggle, onUpdateTimer, onUpdateNumeric }) {
+export default function HabitItem({
+  habit,
+  onToggle,
+  onUpdateTimer,
+  onUpdateNumeric,
+}) {
   return (
     <HabitFrame habit={habit}>
-      {habit.trackingType === 'timer' && (
-        <TimerControl habit={habit} onUpdateTimer={(v) => onUpdateTimer?.(habit.id, v)} />
+      {habit.trackingType === "timer" && (
+        <TimerControl
+          habit={habit}
+          onUpdateTimer={(v) => onUpdateTimer?.(habit.id, v)}
+        />
       )}
-      {habit.trackingType === 'numeric' && (
-        <NumericControl habit={habit} onUpdateNumeric={(v) => onUpdateNumeric?.(habit.id, v)} />
+      {habit.trackingType === "numeric" && (
+        <NumericControl
+          habit={habit}
+          onUpdateNumeric={(v) => onUpdateNumeric?.(habit.id, v)}
+        />
       )}
-      {(habit.trackingType === 'tick' || !habit.trackingType) && (
+      {(habit.trackingType === "tick" || !habit.trackingType) && (
         <TickControl habit={habit} onToggle={onToggle} />
       )}
     </HabitFrame>
-  )
+  );
 }

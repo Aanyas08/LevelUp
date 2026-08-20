@@ -20,7 +20,7 @@ export function getIcon(key) {
 export const COLOR_CLASSES = {
   purple: { text: 'text-purple', bg: 'bg-purple/10' },
   blue: { text: 'text-blue-400', bg: 'bg-blue-400/10' },
-  orange: { text: 'text-orange-400', bg: 'bg-orange-400/10' },
+  orange: { text: 'text-red-400', bg: 'bg-red-400/10' },
   teal: { text: 'text-teal', bg: 'bg-teal/10' },
   gold: { text: 'text-gold', bg: 'bg-gold/10' },
 }

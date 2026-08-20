@@ -1,12 +1,11 @@
-import LevelRing from '../components/LevelRing.jsx'
-import { Flame, Star, Trophy, Coins } from 'lucide-react'
-import { useGame } from '../game/GameContext.jsx'
-import { useAuth } from '../auth/AuthContext.jsx'
-
+import LevelRing from "../components/LevelRing.jsx";
+import { Flame, Star, Trophy, Coins } from "lucide-react";
+import { useGame } from "../game/GameContext.jsx";
+import { useAuth } from "../auth/AuthContext.jsx";
 
 export default function Profile() {
-  const { player, xpCap, rank } = useGame()
-  const {user} = useAuth()
+  const { player, xpCap, rank } = useGame();
+  const { user } = useAuth();
 
   return (
     <div className="max-w-3xl">
@@ -17,24 +16,35 @@ export default function Profile() {
           {user?.name[0]}
         </div>
         <div className="flex-1">
-          <p className="text-lg font-semibold">{user?.name || 'Guest'}</p>
+          <p className="text-lg font-semibold">{user?.name || "Guest"}</p>
           <p className="text-sm text-gray-400">{rank}</p>
         </div>
-        <LevelRing level={player.level} xp={player.xp} xpCap={xpCap} size={64} />
+        <LevelRing
+          level={player.level}
+          xp={player.xp}
+          xpCap={xpCap}
+          size={64}
+        />
       </div>
 
       <div className="grid grid-cols-4 gap-4">
         <div className="bg-surface border border-border rounded-xl px-4 py-4 flex items-center gap-3">
           <Flame size={20} className="text-orange-400" />
           <div>
-            <p className="text-lg font-semibold leading-none">{player.currentStreak} days</p>
-            <p className="text-xs text-gray-400 mt-1">Longest streak: {player.longestStreak}</p>
+            <p className="text-lg font-semibold leading-none">
+              {player.currentStreak} days
+            </p>
+            <p className="text-xs text-gray-400 mt-1">
+              Longest streak: {player.longestStreak}
+            </p>
           </div>
         </div>
         <div className="bg-surface border border-border rounded-xl px-4 py-4 flex items-center gap-3">
           <Star size={20} className="text-teal" />
           <div>
-            <p className="text-lg font-semibold leading-none">{player.totalXpEarned} XP</p>
+            <p className="text-lg font-semibold leading-none">
+              {player.totalXpEarned} XP
+            </p>
             <p className="text-xs text-gray-400 mt-1">Total earned</p>
           </div>
         </div>
@@ -54,5 +64,5 @@ export default function Profile() {
         </div>
       </div>
     </div>
-  )
+  );
 }
