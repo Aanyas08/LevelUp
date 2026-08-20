@@ -5,6 +5,7 @@ import HabitItem from '../components/HabitItem.jsx'
 import AchievementBadge from '../components/AchievementBadge.jsx'
 import LevelUpModal from '../components/LevelUpModal.jsx'
 import { useGame } from '../game/GameContext.jsx'
+import { useAuth } from '../auth/AuthContext.jsx'
 
 export default function Dashboard() {
   const {
@@ -12,13 +13,15 @@ export default function Dashboard() {
     rank, toggleHabit, updateHabitTimer, updateHabitNumeric, levelUpEvent, clearLevelUpEvent,
   } = useGame()
 
+  const {user} = useAuth()
+
   return (
     <div className="max-w-5xl">
       <LevelUpModal event={levelUpEvent} onClose={clearLevelUpEvent} />
 
       <div className="bg-surface border border-border rounded-2xl p-6 mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Welcome back, {player.name}</h1>
+          <h1 className="text-2xl font-bold">Welcome back, {user?.name || 'Guest'}</h1>
           <p className="text-gray-400 text-sm mt-1">
             Day {player.currentStreak} of your journey &middot; {rank}
           </p>
