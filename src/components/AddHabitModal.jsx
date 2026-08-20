@@ -1,8 +1,318 @@
-import { useState } from 'react'
-import { X, CheckSquare, Timer, Hash, Sparkles } from 'lucide-react'
+// import { useState } from 'react'
+// import { X, CheckSquare, Timer, Hash, Sparkles } from 'lucide-react'
+// import { useGame } from '../game/GameContext.jsx'
+// import { DIFFICULTIES } from '../game/xpCurve.js'
+// import { ICONS, COLOR_CLASSES } from '../game/iconRegistry.js'
+
+// const TRACKING_OPTIONS = [
+//   {
+//     value: 'tick',
+//     label: 'Yes / No',
+//     hint: 'Simple checkbox — done or not.',
+//     icon: CheckSquare,
+//   },
+//   {
+//     value: 'timer',
+//     label: 'Timer',
+//     hint: 'Count up to a target duration.',
+//     icon: Timer,
+//   },
+//   {
+//     value: 'numeric',
+//     label: 'Numeric',
+//     hint: 'Log a value against any unit.',
+//     icon: Hash,
+//   },
+// ]
+
+// const COLOR_KEYS = Object.keys(COLOR_CLASSES)
+// const ICON_KEYS = Object.keys(ICONS)
+
+// export default function AddHabitModal({ open, initialKind = 'habit', onClose }) {
+//   const { addHabit } = useGame()
+
+//   const [kind, setKind] = useState(initialKind)
+//   const [trackingType, setTrackingType] = useState('tick')
+//   const [title, setTitle] = useState('')
+//   const [category, setCategory] = useState('Discipline')
+//   const [difficulty, setDifficulty] = useState('Medium')
+//   const [frequency, setFrequency] = useState('Daily')
+//   const [icon, setIcon] = useState('Sparkles')
+//   const [color, setColor] = useState('teal')
+//   const [timerMinutes, setTimerMinutes] = useState(10)
+//   const [numericTarget, setNumericTarget] = useState(10)
+//   const [numericUnit, setNumericUnit] = useState('reps')
+
+//   if (!open) return null
+
+//   function resetAndClose() {
+//     setTitle('')
+//     setTrackingType('tick')
+//     setKind(initialKind)
+//     setCategory('Discipline')
+//     setDifficulty('Medium')
+//     setFrequency('Daily')
+//     setIcon('Sparkles')
+//     setColor('teal')
+//     setTimerMinutes(10)
+//     setNumericTarget(10)
+//     setNumericUnit('reps')
+//     onClose()
+//   }
+
+//   function handleSubmit(e) {
+//     e.preventDefault()
+//     if (!title.trim()) return
+
+//     addHabit({
+//       title: title.trim(),
+//       category,
+//       difficulty,
+//       frequency,
+//       icon,
+//       color,
+//       kind,
+//       trackingType,
+//       timerTargetSeconds: Math.max(60, Math.round(timerMinutes * 60)),
+//       numericTarget: Math.max(1, Number(numericTarget) || 1),
+//       numericUnit: numericUnit.trim() || 'reps',
+//     })
+//     resetAndClose()
+//   }
+
+//   return (
+//     <div
+//       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm levelup-backdrop px-4"
+//       onClick={resetAndClose}
+//       role="dialog"
+//       aria-modal="true"
+//       aria-label={kind === 'task' ? 'New task' : 'New habit'}
+//     >
+//       <div
+//         className="relative levelup-card w-full max-w-lg bg-surface border border-border rounded-2xl p-6 max-h-[90vh] overflow-y-auto"
+//         onClick={(e) => e.stopPropagation()}
+//       >
+//         <button
+//           onClick={resetAndClose}
+//           aria-label="Close"
+//           className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"
+//         >
+//           <X size={18} />
+//         </button>
+
+//         <h2 className="text-lg font-bold mb-1">New {kind === 'task' ? 'task' : 'habit'}</h2>
+//         <p className="text-sm text-gray-400 mb-5">
+//           {kind === 'task' ? 'A one-off — no streak, just get it done.' : 'Something you\'ll build a streak on.'}
+//         </p>
+
+//         {/* Habit vs Task toggle */}
+//         <div className="grid grid-cols-2 gap-2 mb-5 bg-surface-light rounded-xl p-1">
+//           <button
+//             type="button"
+//             onClick={() => setKind('habit')}
+//             className={`flex items-center justify-center gap-1.5 rounded-lg py-2 text-sm font-semibold transition-all duration-200 ${
+//               kind === 'habit' ? 'bg-teal text-bg shadow-sm' : 'text-gray-400 hover:text-white'
+//             }`}
+//           >
+//             <Sparkles size={14} />
+//             Habit
+//           </button>
+//           <button
+//             type="button"
+//             onClick={() => setKind('task')}
+//             className={`flex items-center justify-center gap-1.5 rounded-lg py-2 text-sm font-semibold transition-all duration-200 ${
+//               kind === 'task' ? 'bg-gold text-bg shadow-sm' : 'text-gray-400 hover:text-white'
+//             }`}
+//           >
+//             <CheckSquare size={14} />
+//             Task
+//           </button>
+//         </div>
+
+//         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+//           <label className="flex flex-col gap-1.5">
+//             <span className="text-xs font-medium text-gray-400">Title</span>
+//             <input
+//               autoFocus
+//               value={title}
+//               onChange={(e) => setTitle(e.target.value)}
+//               placeholder={kind === 'task' ? 'Finish portfolio README' : 'Meditate for 10 minutes'}
+//               className="bg-surface-light border border-border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-teal/60 transition-colors"
+//             />
+//           </label>
+
+//           {/* Tracking type picker */}
+//           <div>
+//             <span className="text-xs font-medium text-gray-400 mb-2 block">How do you want to track it?</span>
+//             <div className="grid grid-cols-3 gap-2">
+//               {TRACKING_OPTIONS.map(({ value, label, hint, icon: OptIcon }) => {
+//                 const active = trackingType === value
+//                 return (
+//                   <button
+//                     key={value}
+//                     type="button"
+//                     onClick={() => setTrackingType(value)}
+//                     title={hint}
+//                     className={`flex flex-col items-center gap-1.5 rounded-xl border px-2 py-3 text-center transition-all duration-200 hover:-translate-y-0.5 ${
+//                       active
+//                         ? 'border-teal bg-teal/10 text-teal'
+//                         : 'border-border text-gray-400 hover:border-teal/40 hover:text-white'
+//                     }`}
+//                   >
+//                     <OptIcon size={18} />
+//                     <span className="text-xs font-semibold">{label}</span>
+//                   </button>
+//                 )
+//               })}
+//             </div>
+//           </div>
+
+//           {/* Conditional fields per tracking type */}
+//           {trackingType === 'timer' && (
+//             <label className="flex flex-col gap-1.5">
+//               <span className="text-xs font-medium text-gray-400">Target duration (minutes)</span>
+//               <input
+//                 type="number"
+//                 min={1}
+//                 value={timerMinutes}
+//                 onChange={(e) => setTimerMinutes(e.target.value)}
+//                 className="bg-surface-light border border-border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-teal/60 transition-colors"
+//               />
+//             </label>
+//           )}
+
+//           {trackingType === 'numeric' && (
+//             <div className="grid grid-cols-2 gap-3">
+//               <label className="flex flex-col gap-1.5">
+//                 <span className="text-xs font-medium text-gray-400">Target value</span>
+//                 <input
+//                   type="number"
+//                   min={1}
+//                   value={numericTarget}
+//                   onChange={(e) => setNumericTarget(e.target.value)}
+//                   className="bg-surface-light border border-border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-teal/60 transition-colors"
+//                 />
+//               </label>
+//               <label className="flex flex-col gap-1.5">
+//                 <span className="text-xs font-medium text-gray-400">Unit</span>
+//                 <input
+//                   value={numericUnit}
+//                   onChange={(e) => setNumericUnit(e.target.value)}
+//                   placeholder="hours, glasses, pages…"
+//                   className="bg-surface-light border border-border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-teal/60 transition-colors"
+//                 />
+//               </label>
+//             </div>
+//           )}
+
+//           {/* Category / Difficulty / Frequency */}
+//           <div className="grid grid-cols-3 gap-3">
+//             <label className="flex flex-col gap-1.5">
+//               <span className="text-xs font-medium text-gray-400">Category</span>
+//               <input
+//                 value={category}
+//                 onChange={(e) => setCategory(e.target.value)}
+//                 className="bg-surface-light border border-border rounded-lg px-2.5 py-2.5 text-sm focus:outline-none focus:border-teal/60 transition-colors"
+//               />
+//             </label>
+//             <label className="flex flex-col gap-1.5">
+//               <span className="text-xs font-medium text-gray-400">Difficulty</span>
+//               <select
+//                 value={difficulty}
+//                 onChange={(e) => setDifficulty(e.target.value)}
+//                 className="bg-surface-light border border-border rounded-lg px-2.5 py-2.5 text-sm focus:outline-none focus:border-teal/60 transition-colors"
+//               >
+//                 {DIFFICULTIES.map((d) => (
+//                   <option key={d}>{d}</option>
+//                 ))}
+//               </select>
+//             </label>
+//             <label className="flex flex-col gap-1.5">
+//               <span className="text-xs font-medium text-gray-400">Frequency</span>
+//               <select
+//                 value={frequency}
+//                 onChange={(e) => setFrequency(e.target.value)}
+//                 disabled={kind === 'task'}
+//                 className="bg-surface-light border border-border rounded-lg px-2.5 py-2.5 text-sm focus:outline-none focus:border-teal/60 transition-colors disabled:opacity-50"
+//               >
+//                 <option>Daily</option>
+//                 <option>Weekly</option>
+//               </select>
+//             </label>
+//           </div>
+
+//           {/* Icon picker */}
+//           <div>
+//             <span className="text-xs font-medium text-gray-400 mb-2 block">Icon</span>
+//             <div className="grid grid-cols-8 gap-1.5">
+//               {ICON_KEYS.map((key) => {
+//                 const Icon = ICONS[key]
+//                 const active = icon === key
+//                 return (
+//                   <button
+//                     key={key}
+//                     type="button"
+//                     onClick={() => setIcon(key)}
+//                     aria-label={key}
+//                     className={`aspect-square rounded-lg flex items-center justify-center transition-all duration-150 hover:scale-110 ${
+//                       active ? 'bg-teal text-bg' : 'bg-surface-light text-gray-400 hover:text-white'
+//                     }`}
+//                   >
+//                     <Icon size={15} />
+//                   </button>
+//                 )
+//               })}
+//             </div>
+//           </div>
+
+//           {/* Color picker */}
+//           <div>
+//             <span className="text-xs font-medium text-gray-400 mb-2 block">Color</span>
+//             <div className="flex gap-2">
+//               {COLOR_KEYS.map((key) => {
+//                 const { text } = COLOR_CLASSES[key]
+//                 const active = color === key
+//                 return (
+//                   <button
+//                     key={key}
+//                     type="button"
+//                     onClick={() => setColor(key)}
+//                     aria-label={key}
+//                     className={`w-8 h-8 rounded-full transition-all duration-150 hover:scale-110 ${text.replace('text-', 'bg-')} ${
+//                       active ? 'ring-2 ring-offset-2 ring-offset-surface ring-white scale-110' : 'opacity-70'
+//                     }`}
+//                   />
+//                 )
+//               })}
+//             </div>
+//           </div>
+
+//           <button
+//             type="submit"
+//             className="mt-1 bg-teal text-bg font-semibold text-sm rounded-lg py-2.5 hover:bg-teal-light hover:scale-[1.01] active:scale-[0.98] transition-all"
+//           >
+//             Create {kind === 'task' ? 'task' : 'habit'}
+//           </button>
+//         </form>
+//       </div>
+//     </div>
+//   )
+// }
+import { useEffect, useState } from 'react'
+import {
+  X,
+  CheckSquare,
+  Timer,
+  Hash,
+  Sparkles,
+  CalendarDays,
+} from 'lucide-react'
 import { useGame } from '../game/GameContext.jsx'
 import { DIFFICULTIES } from '../game/xpCurve.js'
-import { ICONS, COLOR_CLASSES } from '../game/iconRegistry.js'
+import {
+  ICONS,
+  COLOR_CLASSES,
+} from '../game/iconRegistry.js'
 
 const TRACKING_OPTIONS = [
   {
@@ -25,23 +335,76 @@ const TRACKING_OPTIONS = [
   },
 ]
 
-const COLOR_KEYS = Object.keys(COLOR_CLASSES)
-const ICON_KEYS = Object.keys(ICONS)
+const COLOR_KEYS =
+  Object.keys(COLOR_CLASSES)
 
-export default function AddHabitModal({ open, initialKind = 'habit', onClose }) {
+const ICON_KEYS =
+  Object.keys(ICONS)
+
+function todayKey() {
+  const date = new Date()
+
+  const y = date.getFullYear()
+  const m = String(
+    date.getMonth() + 1
+  ).padStart(2, '0')
+  const d = String(
+    date.getDate()
+  ).padStart(2, '0')
+
+  return `${y}-${m}-${d}`
+}
+
+export default function AddHabitModal({
+  open,
+  initialKind = 'habit',
+  scheduledDate = null,
+  onClose,
+}) {
   const { addHabit } = useGame()
 
-  const [kind, setKind] = useState(initialKind)
-  const [trackingType, setTrackingType] = useState('tick')
-  const [title, setTitle] = useState('')
-  const [category, setCategory] = useState('Discipline')
-  const [difficulty, setDifficulty] = useState('Medium')
-  const [frequency, setFrequency] = useState('Daily')
-  const [icon, setIcon] = useState('Sparkles')
-  const [color, setColor] = useState('teal')
-  const [timerMinutes, setTimerMinutes] = useState(10)
-  const [numericTarget, setNumericTarget] = useState(10)
-  const [numericUnit, setNumericUnit] = useState('reps')
+  const [kind, setKind] =
+    useState(initialKind)
+
+  const [trackingType, setTrackingType] =
+    useState('tick')
+
+  const [title, setTitle] =
+    useState('')
+
+  const [category, setCategory] =
+    useState('Discipline')
+
+  const [difficulty, setDifficulty] =
+    useState('Medium')
+
+  const [frequency, setFrequency] =
+    useState('Daily')
+
+  const [scheduleDate, setScheduleDate] =
+    useState(todayKey)
+
+  const [icon, setIcon] =
+    useState('Sparkles')
+
+  const [color, setColor] =
+    useState('teal')
+
+  const [timerMinutes, setTimerMinutes] =
+    useState(10)
+
+  const [numericTarget, setNumericTarget] =
+    useState(10)
+
+  const [numericUnit, setNumericUnit] =
+    useState('reps')
+
+  useEffect(() => {
+    if (open) {
+      setKind(initialKind)
+      setScheduleDate(scheduledDate || todayKey())
+    }
+  }, [open, initialKind, scheduledDate])
 
   if (!open) return null
 
@@ -52,31 +415,52 @@ export default function AddHabitModal({ open, initialKind = 'habit', onClose }) 
     setCategory('Discipline')
     setDifficulty('Medium')
     setFrequency('Daily')
+    setScheduleDate(todayKey())
     setIcon('Sparkles')
     setColor('teal')
     setTimerMinutes(10)
     setNumericTarget(10)
     setNumericUnit('reps')
+
     onClose()
   }
 
   function handleSubmit(e) {
     e.preventDefault()
-    if (!title.trim()) return
+
+    if (
+      !title.trim() ||
+      !scheduleDate
+    ) {
+      return
+    }
 
     addHabit({
-      title: title.trim(),
-      category,
-      difficulty,
-      frequency,
-      icon,
-      color,
-      kind,
-      trackingType,
-      timerTargetSeconds: Math.max(60, Math.round(timerMinutes * 60)),
-      numericTarget: Math.max(1, Number(numericTarget) || 1),
-      numericUnit: numericUnit.trim() || 'reps',
-    })
+  title: title.trim(),
+  category,
+  difficulty,
+  frequency,
+  icon,
+  color,
+  kind,
+  trackingType,
+
+  scheduledDate: scheduleDate,
+
+  timerTargetSeconds: Math.max(
+    60,
+    Math.round(timerMinutes * 60)
+  ),
+
+  numericTarget: Math.max(
+    1,
+    Number(numericTarget) || 1
+  ),
+
+  numericUnit:
+    numericUnit.trim() || 'reps',
+})
+
     resetAndClose()
   }
 
@@ -86,11 +470,17 @@ export default function AddHabitModal({ open, initialKind = 'habit', onClose }) 
       onClick={resetAndClose}
       role="dialog"
       aria-modal="true"
-      aria-label={kind === 'task' ? 'New task' : 'New habit'}
+      aria-label={
+        kind === 'task'
+          ? 'New task'
+          : 'New habit'
+      }
     >
       <div
         className="relative levelup-card w-full max-w-lg bg-surface border border-border rounded-2xl p-6 max-h-[90vh] overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) =>
+          e.stopPropagation()
+        }
       >
         <button
           onClick={resetAndClose}
@@ -100,28 +490,45 @@ export default function AddHabitModal({ open, initialKind = 'habit', onClose }) 
           <X size={18} />
         </button>
 
-        <h2 className="text-lg font-bold mb-1">New {kind === 'task' ? 'task' : 'habit'}</h2>
+        <h2 className="text-lg font-bold mb-1">
+          New{' '}
+          {kind === 'task'
+            ? 'task'
+            : 'habit'}
+        </h2>
+
         <p className="text-sm text-gray-400 mb-5">
-          {kind === 'task' ? 'A one-off — no streak, just get it done.' : 'Something you\'ll build a streak on.'}
+          {kind === 'task'
+            ? 'Schedule a one-off task on any day.'
+            : 'Choose when this habit should start and build its streak.'}
         </p>
 
-        {/* Habit vs Task toggle */}
+        {/* Habit / Task */}
         <div className="grid grid-cols-2 gap-2 mb-5 bg-surface-light rounded-xl p-1">
           <button
             type="button"
-            onClick={() => setKind('habit')}
+            onClick={() =>
+              setKind('habit')
+            }
             className={`flex items-center justify-center gap-1.5 rounded-lg py-2 text-sm font-semibold transition-all duration-200 ${
-              kind === 'habit' ? 'bg-teal text-bg shadow-sm' : 'text-gray-400 hover:text-white'
+              kind === 'habit'
+                ? 'bg-teal text-bg shadow-sm'
+                : 'text-gray-400 hover:text-white'
             }`}
           >
             <Sparkles size={14} />
             Habit
           </button>
+
           <button
             type="button"
-            onClick={() => setKind('task')}
+            onClick={() =>
+              setKind('task')
+            }
             className={`flex items-center justify-center gap-1.5 rounded-lg py-2 text-sm font-semibold transition-all duration-200 ${
-              kind === 'task' ? 'bg-gold text-bg shadow-sm' : 'text-gray-400 hover:text-white'
+              kind === 'task'
+                ? 'bg-gold text-bg shadow-sm'
+                : 'text-gray-400 hover:text-white'
             }`}
           >
             <CheckSquare size={14} />
@@ -129,75 +536,226 @@ export default function AddHabitModal({ open, initialKind = 'habit', onClose }) 
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-5"
+        >
+          {/* Title */}
           <label className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-gray-400">Title</span>
+            <span className="text-xs font-medium text-gray-400">
+              Title
+            </span>
+
             <input
               autoFocus
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder={kind === 'task' ? 'Finish portfolio README' : 'Meditate for 10 minutes'}
+              onChange={(e) =>
+                setTitle(e.target.value)
+              }
+              placeholder={
+                kind === 'task'
+                  ? 'Finish portfolio README'
+                  : 'Meditate for 10 minutes'
+              }
               className="bg-surface-light border border-border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-teal/60 transition-colors"
             />
           </label>
 
-          {/* Tracking type picker */}
-          <div>
-            <span className="text-xs font-medium text-gray-400 mb-2 block">How do you want to track it?</span>
-            <div className="grid grid-cols-3 gap-2">
-              {TRACKING_OPTIONS.map(({ value, label, hint, icon: OptIcon }) => {
-                const active = trackingType === value
-                return (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => setTrackingType(value)}
-                    title={hint}
-                    className={`flex flex-col items-center gap-1.5 rounded-xl border px-2 py-3 text-center transition-all duration-200 hover:-translate-y-0.5 ${
-                      active
-                        ? 'border-teal bg-teal/10 text-teal'
-                        : 'border-border text-gray-400 hover:border-teal/40 hover:text-white'
-                    }`}
-                  >
-                    <OptIcon size={18} />
-                    <span className="text-xs font-semibold">{label}</span>
-                  </button>
-                )
-              })}
+          {scheduledDate && (
+            <div className="flex items-center gap-2 bg-teal/10 border border-teal/20 rounded-lg px-3 py-2.5">
+              <CalendarDays
+                size={16}
+                className="text-teal"
+              />
+
+              <div>
+                <p className="text-xs text-gray-500">
+                  Scheduled for
+                </p>
+
+                <p className="text-sm font-semibold text-teal">
+                  {new Date(
+                    `${scheduledDate}T00:00:00`
+                  ).toLocaleDateString(undefined, {
+                    weekday: 'long',
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Schedule */}
+          <div className="grid grid-cols-[1fr_auto] gap-3">
+            <label className="flex flex-col gap-1.5">
+              <span className="text-xs font-medium text-gray-400">
+                Schedule date
+              </span>
+
+              <div className="relative">
+                <CalendarDays
+                  size={15}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-teal pointer-events-none"
+                />
+
+                <input
+                  type="date"
+                  value={scheduleDate}
+                  onChange={(e) =>
+                    setScheduleDate(
+                      e.target.value
+                    )
+                  }
+                  className="w-full bg-surface-light border border-border rounded-lg pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:border-teal/60 transition-colors"
+                />
+              </div>
+            </label>
+
+            <div className="flex flex-col gap-1.5">
+              <span className="text-xs font-medium text-gray-400">
+                Schedule
+              </span>
+
+              <div className="bg-teal/10 border border-teal/20 rounded-lg px-3 py-2.5 text-xs text-teal font-semibold">
+                {kind === 'task'
+                  ? 'One time'
+                  : frequency}
+              </div>
             </div>
           </div>
 
-          {/* Conditional fields per tracking type */}
-          {trackingType === 'timer' && (
+          {/* Repeat */}
+          {kind === 'habit' && (
             <label className="flex flex-col gap-1.5">
-              <span className="text-xs font-medium text-gray-400">Target duration (minutes)</span>
+              <span className="text-xs font-medium text-gray-400">
+                Repeat
+              </span>
+
+              <select
+                value={frequency}
+                onChange={(e) =>
+                  setFrequency(
+                    e.target.value
+                  )
+                }
+                className="bg-surface-light border border-border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-teal/60 transition-colors"
+              >
+                <option>Daily</option>
+                <option>Weekly</option>
+              </select>
+
+              <span className="text-[11px] text-gray-500">
+                Daily repeats from the selected
+                date. Weekly repeats on the same
+                weekday.
+              </span>
+            </label>
+          )}
+
+          {/* Tracking */}
+          <div>
+            <span className="text-xs font-medium text-gray-400 mb-2 block">
+              How do you want to track it?
+            </span>
+
+            <div className="grid grid-cols-3 gap-2">
+              {TRACKING_OPTIONS.map(
+                ({
+                  value,
+                  label,
+                  hint,
+                  icon: OptIcon,
+                }) => {
+                  const active =
+                    trackingType ===
+                    value
+
+                  return (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() =>
+                        setTrackingType(
+                          value
+                        )
+                      }
+                      title={hint}
+                      className={`flex flex-col items-center gap-1.5 rounded-xl border px-2 py-3 text-center transition-all duration-200 hover:-translate-y-0.5 ${
+                        active
+                          ? 'border-teal bg-teal/10 text-teal'
+                          : 'border-border text-gray-400 hover:border-teal/40 hover:text-white'
+                      }`}
+                    >
+                      <OptIcon size={18} />
+
+                      <span className="text-xs font-semibold">
+                        {label}
+                      </span>
+                    </button>
+                  )
+                }
+              )}
+            </div>
+          </div>
+
+          {/* Timer */}
+          {trackingType ===
+            'timer' && (
+            <label className="flex flex-col gap-1.5">
+              <span className="text-xs font-medium text-gray-400">
+                Target duration (minutes)
+              </span>
+
               <input
                 type="number"
                 min={1}
                 value={timerMinutes}
-                onChange={(e) => setTimerMinutes(e.target.value)}
+                onChange={(e) =>
+                  setTimerMinutes(
+                    e.target.value
+                  )
+                }
                 className="bg-surface-light border border-border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-teal/60 transition-colors"
               />
             </label>
           )}
 
-          {trackingType === 'numeric' && (
+          {/* Numeric */}
+          {trackingType ===
+            'numeric' && (
             <div className="grid grid-cols-2 gap-3">
               <label className="flex flex-col gap-1.5">
-                <span className="text-xs font-medium text-gray-400">Target value</span>
+                <span className="text-xs font-medium text-gray-400">
+                  Target value
+                </span>
+
                 <input
                   type="number"
                   min={1}
                   value={numericTarget}
-                  onChange={(e) => setNumericTarget(e.target.value)}
+                  onChange={(e) =>
+                    setNumericTarget(
+                      e.target.value
+                    )
+                  }
                   className="bg-surface-light border border-border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-teal/60 transition-colors"
                 />
               </label>
+
               <label className="flex flex-col gap-1.5">
-                <span className="text-xs font-medium text-gray-400">Unit</span>
+                <span className="text-xs font-medium text-gray-400">
+                  Unit
+                </span>
+
                 <input
                   value={numericUnit}
-                  onChange={(e) => setNumericUnit(e.target.value)}
+                  onChange={(e) =>
+                    setNumericUnit(
+                      e.target.value
+                    )
+                  }
                   placeholder="hours, glasses, pages…"
                   className="bg-surface-light border border-border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-teal/60 transition-colors"
                 />
@@ -205,85 +763,145 @@ export default function AddHabitModal({ open, initialKind = 'habit', onClose }) 
             </div>
           )}
 
-          {/* Category / Difficulty / Frequency */}
+          {/* Category / Difficulty / Type */}
           <div className="grid grid-cols-3 gap-3">
             <label className="flex flex-col gap-1.5">
-              <span className="text-xs font-medium text-gray-400">Category</span>
+              <span className="text-xs font-medium text-gray-400">
+                Category
+              </span>
+
               <input
                 value={category}
-                onChange={(e) => setCategory(e.target.value)}
+                onChange={(e) =>
+                  setCategory(
+                    e.target.value
+                  )
+                }
                 className="bg-surface-light border border-border rounded-lg px-2.5 py-2.5 text-sm focus:outline-none focus:border-teal/60 transition-colors"
               />
             </label>
+
             <label className="flex flex-col gap-1.5">
-              <span className="text-xs font-medium text-gray-400">Difficulty</span>
+              <span className="text-xs font-medium text-gray-400">
+                Difficulty
+              </span>
+
               <select
                 value={difficulty}
-                onChange={(e) => setDifficulty(e.target.value)}
+                onChange={(e) =>
+                  setDifficulty(
+                    e.target.value
+                  )
+                }
                 className="bg-surface-light border border-border rounded-lg px-2.5 py-2.5 text-sm focus:outline-none focus:border-teal/60 transition-colors"
               >
-                {DIFFICULTIES.map((d) => (
-                  <option key={d}>{d}</option>
-                ))}
+                {DIFFICULTIES.map(
+                  (d) => (
+                    <option key={d}>
+                      {d}
+                    </option>
+                  )
+                )}
               </select>
             </label>
-            <label className="flex flex-col gap-1.5">
-              <span className="text-xs font-medium text-gray-400">Frequency</span>
-              <select
-                value={frequency}
-                onChange={(e) => setFrequency(e.target.value)}
-                disabled={kind === 'task'}
-                className="bg-surface-light border border-border rounded-lg px-2.5 py-2.5 text-sm focus:outline-none focus:border-teal/60 transition-colors disabled:opacity-50"
-              >
-                <option>Daily</option>
-                <option>Weekly</option>
-              </select>
-            </label>
-          </div>
 
-          {/* Icon picker */}
-          <div>
-            <span className="text-xs font-medium text-gray-400 mb-2 block">Icon</span>
-            <div className="grid grid-cols-8 gap-1.5">
-              {ICON_KEYS.map((key) => {
-                const Icon = ICONS[key]
-                const active = icon === key
-                return (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => setIcon(key)}
-                    aria-label={key}
-                    className={`aspect-square rounded-lg flex items-center justify-center transition-all duration-150 hover:scale-110 ${
-                      active ? 'bg-teal text-bg' : 'bg-surface-light text-gray-400 hover:text-white'
-                    }`}
-                  >
-                    <Icon size={15} />
-                  </button>
-                )
-              })}
+            <div className="flex flex-col gap-1.5">
+              <span className="text-xs font-medium text-gray-400">
+                Type
+              </span>
+
+              <div
+                className={`rounded-lg px-2.5 py-2.5 text-sm font-semibold ${
+                  kind === 'task'
+                    ? 'bg-gold/10 text-gold'
+                    : 'bg-teal/10 text-teal'
+                }`}
+              >
+                {kind === 'task'
+                  ? 'Task'
+                  : 'Habit'}
+              </div>
             </div>
           </div>
 
-          {/* Color picker */}
+          {/* Icon */}
           <div>
-            <span className="text-xs font-medium text-gray-400 mb-2 block">Color</span>
+            <span className="text-xs font-medium text-gray-400 mb-2 block">
+              Icon
+            </span>
+
+            <div className="grid grid-cols-8 gap-1.5">
+              {ICON_KEYS.map(
+                (key) => {
+                  const Icon =
+                    ICONS[key]
+
+                  const active =
+                    icon === key
+
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() =>
+                        setIcon(key)
+                      }
+                      aria-label={key}
+                      className={`aspect-square rounded-lg flex items-center justify-center transition-all duration-150 hover:scale-110 ${
+                        active
+                          ? 'bg-teal text-bg'
+                          : 'bg-surface-light text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      <Icon size={15} />
+                    </button>
+                  )
+                }
+              )}
+            </div>
+          </div>
+
+          {/* Color */}
+          <div>
+            <span className="text-xs font-medium text-gray-400 mb-2 block">
+              Color
+            </span>
+
             <div className="flex gap-2">
-              {COLOR_KEYS.map((key) => {
-                const { text } = COLOR_CLASSES[key]
-                const active = color === key
-                return (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => setColor(key)}
-                    aria-label={key}
-                    className={`w-8 h-8 rounded-full transition-all duration-150 hover:scale-110 ${text.replace('text-', 'bg-')} ${
-                      active ? 'ring-2 ring-offset-2 ring-offset-surface ring-white scale-110' : 'opacity-70'
-                    }`}
-                  />
-                )
-              })}
+              {COLOR_KEYS.map(
+                (key) => {
+                  const {
+                    text,
+                  } =
+                    COLOR_CLASSES[
+                      key
+                    ]
+
+                  const active =
+                    color === key
+
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() =>
+                        setColor(
+                          key
+                        )
+                      }
+                      aria-label={key}
+                      className={`w-8 h-8 rounded-full transition-all duration-150 hover:scale-110 ${text.replace(
+                        'text-',
+                        'bg-'
+                      )} ${
+                        active
+                          ? 'ring-2 ring-offset-2 ring-offset-surface ring-white scale-110'
+                          : 'opacity-70'
+                      }`}
+                    />
+                  )
+                }
+              )}
             </div>
           </div>
 
@@ -291,7 +909,10 @@ export default function AddHabitModal({ open, initialKind = 'habit', onClose }) 
             type="submit"
             className="mt-1 bg-teal text-bg font-semibold text-sm rounded-lg py-2.5 hover:bg-teal-light hover:scale-[1.01] active:scale-[0.98] transition-all"
           >
-            Create {kind === 'task' ? 'task' : 'habit'}
+            Schedule{' '}
+            {kind === 'task'
+              ? 'task'
+              : 'habit'}
           </button>
         </form>
       </div>
